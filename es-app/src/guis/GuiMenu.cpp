@@ -23,17 +23,18 @@
 #include "views/gamelist/IGameListView.h"
 #include "guis/GuiInfoPopup.h"
 
-GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MENU"), mVersion(window)
+GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MPCORE MENU"), mVersion(window)
 {
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
 
 	if (isFullUI) {
-		addEntry("SCRAPER", 0x777777FF, true, [this] { openScraperSettings(); });
-		addEntry("SOUND SETTINGS", 0x777777FF, true, [this] { openSoundSettings(); });
-		addEntry("UI SETTINGS", 0x777777FF, true, [this] { openUISettings(); });
+		
+		addEntry("CONFIGURE CONTROLLERS", 0x777777FF, true, [this] { openConfigInput(); });
 		addEntry("GAME COLLECTION SETTINGS", 0x777777FF, true, [this] { openCollectionSystemSettings(); });
+		addEntry("SCRAPER", 0x777777FF, true, [this] { openScraperSettings(); });		
+		addEntry("UI SETTINGS", 0x777777FF, true, [this] { openUISettings(); });
+		addEntry("SOUND SETTINGS", 0x777777FF, true, [this] { openSoundSettings(); });
 		addEntry("OTHER SETTINGS", 0x777777FF, true, [this] { openOtherSettings(); });
-		addEntry("CONFIGURE INPUT", 0x777777FF, true, [this] { openConfigInput(); });
 	} else {
 		addEntry("SOUND SETTINGS", 0x777777FF, true, [this] { openSoundSettings(); });
 	}
@@ -503,7 +504,7 @@ void GuiMenu::openOtherSettings()
 void GuiMenu::openConfigInput()
 {
 	Window* window = mWindow;
-	window->pushGui(new GuiMsgBox(window, "ARE YOU SURE YOU WANT TO CONFIGURE INPUT?", "YES",
+	window->pushGui(new GuiMsgBox(window, "CONFIGURE YOUR CONTROLLERS NOW?", "YES",
 		[window] {
 		window->pushGui(new GuiDetectDevice(window, false, nullptr));
 	}, "NO", nullptr)
@@ -532,7 +533,7 @@ void GuiMenu::openQuitMenu()
 
 		if (confirm_quit) {
 			row.makeAcceptInputHandler([window] {
-				window->pushGui(new GuiMsgBox(window, "REALLY RESTART?", "YES", restart_es_fx, "NO", nullptr));
+				window->pushGui(new GuiMsgBox(window, "RESTART ES NOW?", "YES", restart_es_fx, "NO", nullptr));
 			});
 		} else {
 			row.makeAcceptInputHandler(restart_es_fx);
@@ -550,12 +551,12 @@ void GuiMenu::openQuitMenu()
 			row.elements.clear();
 			if (confirm_quit) {
 				row.makeAcceptInputHandler([window] {
-					window->pushGui(new GuiMsgBox(window, "REALLY QUIT?", "YES", quit_es_fx, "NO", nullptr));
+					window->pushGui(new GuiMsgBox(window, "QUIT TO COMMAND LINE?", "YES", quit_es_fx, "NO", nullptr));
 				});
 			} else {
 				row.makeAcceptInputHandler(quit_es_fx);
 			}
-			row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+			row.addElement(std::make_shared<TextComponent>(window, "GO TO COMMAND LINE", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 			s->addRow(row);
 		}
 	}
@@ -571,7 +572,7 @@ void GuiMenu::openQuitMenu()
 	row.elements.clear();
 	if (confirm_quit) {
 		row.makeAcceptInputHandler([window] {
-			window->pushGui(new GuiMsgBox(window, "REALLY RESTART?", "YES", {reboot_sys_fx}, "NO", nullptr));
+			window->pushGui(new GuiMsgBox(window, "RESTART SYSTEM NOW?", "YES", {reboot_sys_fx}, "NO", nullptr));
 		});
 	} else {
 		row.makeAcceptInputHandler(reboot_sys_fx);
@@ -590,7 +591,7 @@ void GuiMenu::openQuitMenu()
 	row.elements.clear();
 	if (confirm_quit) {
 		row.makeAcceptInputHandler([window] {
-			window->pushGui(new GuiMsgBox(window, "REALLY SHUTDOWN?", "YES", shutdown_sys_fx, "NO", nullptr));
+			window->pushGui(new GuiMsgBox(window, "SHUTDOWN SYSTEM NOW?", "YES", shutdown_sys_fx, "NO", nullptr));
 		});
 	} else {
 		row.makeAcceptInputHandler(shutdown_sys_fx);
